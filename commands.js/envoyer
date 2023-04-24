@@ -1,0 +1,82 @@
+const { MessageEmbed } = require('discord.js');
+
+module.exports = {
+  name: 'envoyer',
+  description: 'Envoie un message anonyme',
+  options: [
+    {
+      name: 'couleur',
+      description: 'Couleur de l\'embed',
+      type: 'STRING',
+      required: false,
+    },
+    {
+      name: 'titre',
+      description: 'Titre de l\'embed',
+      type: 'STRING',
+      required: false,
+    },
+    {
+      name: 'description',
+      description: 'Description de l\'embed',
+      type: 'STRING',
+      required: false,
+    },
+    {
+      name: 'vignette',
+      description: 'URL de la vignette de l\'embed',
+      type: 'STRING',
+      required: false,
+    },
+    {
+      name: 'image',
+      description: 'URL de l\'image de l\'embed',
+      type: 'STRING',
+      required: false,
+    },
+    {
+      name: 'contenu',
+      description: 'Contenu du message anonyme',
+      type: 'STRING',
+      required: true,
+    },
+  ],
+  async execute(interaction) {
+    // Vérifie si l'utilisateur a la permission d'envoyer un message
+    if (!interaction.member.permissions.has('ADMINISTRATOR')) {
+      return interaction.reply('Vous n\'avez pas la permission d\'utiliser cette commande.');
+    }
+
+    // Récupère les options de la commande
+    const couleur = interaction.options.getString('couleur');
+    const titre = interaction.options.getString('titre');
+    const description = interaction.options.getString('description');
+    const vignette = interaction.options.getString('vignette');
+    const image = interaction.options.getString('image');
+    const contenu = interaction.options.getString('contenu');
+
+    // Création d'un embed
+    const embed = new MessageEmbed();
+    if (couleur) {
+      embed.setColor(couleur);
+    }
+    if (titre) {
+      embed.setTitle(titre);
+    }
+    if (description) {
+      embed.setDescription(description);
+    }
+    if (vignette) {
+      embed.setThumbnail(vignette);
+    }
+    if (image) {
+      embed.setImage(image);
+    }
+    if (contenu) {
+      embed.addField('Contenu', contenu);
+    }
+
+    // Envoie le message anonyme dans le même salon
+    await interaction.reply({ embeds: [embed], ephemeral: true });
+  },
+};
